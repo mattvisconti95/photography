@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Matthew | Photography</title>
+<meta name="description" content="Portrait and fashion photography based in the New York City area.">
+<style>
+  /* COLORS: change these four values to re-theme the whole site */
+  :root {
+    --bg: #343c46;      /* page background (dark slate) */
+    --tile: #2a3038;    /* color shown behind photos while they load */
+    --text: #eef1f4;    /* main text */
+    --muted: #a9b2bd;   /* softer text */
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--text);
+         font-family: "Avenir Next", "Segoe UI", Helvetica, Arial, sans-serif; }
+
+  /* TOP BAR: name on the left, links on the right */
+  header { display: flex; justify-content: space-between; align-items: center;
+           padding: 22px 18px; }
+  header a { color: var(--text); text-decoration: none; font-size: 15px; }
+  header nav a { margin-left: 24px; color: var(--muted); }
+  header a:hover, header a:focus-visible { color: #fff; text-decoration: underline; }
+
+  /* PHOTO GRID: 4 columns on desktop, 2 on tablet, 1 on phone */
+  .grid { display: grid; gap: 8px; padding: 0 18px 18px;
+          grid-template-columns: repeat(4, 1fr); }
+  @media (max-width: 900px) { .grid { grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 480px) { .grid { grid-template-columns: 1fr; } }
+  .grid button { padding: 0; border: 0; background: var(--tile); cursor: zoom-in;
+                 aspect-ratio: 2 / 3; overflow: hidden; }
+  .grid img { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+  /* CONTACT */
+  #contact { padding: 60px 18px 80px; max-width: 640px; }
+  #contact h2 { font-size: 22px; font-weight: 500; margin: 0 0 12px; }
+  #contact p { color: var(--muted); line-height: 1.6; margin: 0 0 8px; }
+  #contact a { color: var(--text); }
+
+  /* ENLARGED PHOTO (opens when you click a picture) */
+  #viewer { position: fixed; inset: 0; background: rgba(15,18,22,.94); display: none;
+            align-items: center; justify-content: center; padding: 20px; z-index: 10; }
+  #viewer.open { display: flex; }
+  #viewer img { max-width: 100%; max-height: 100%; object-fit: contain; }
+  #viewer button { position: absolute; top: 14px; right: 18px; background: none;
+                   border: 0; color: var(--text); font-size: 34px; cursor: pointer; }
+  button:focus-visible { outline: 2px solid #fff; outline-offset: 2px; }
+</style>
+</head>
+<body>
+
+<header>
+  <a href="#">Matthew</a>
+  <nav>
+    <a href="#work">Work</a>
+    <a href="#contact">Contact</a>
+  </nav>
+</header>
+
+<main>
+  <!-- The photos are added here automatically by the script below -->
+  <section class="grid" id="work" aria-label="Photo gallery"></section>
+
+  <section id="contact">
+    <h2>Contact</h2>
+    <p>Available for portrait and fashion shoots in the New York City area.</p>
+    <p><a href="mailto:you@example.com">you@example.com</a></p>
+  </section>
+</main>
+
+<!-- Enlarged photo view -->
+<div id="viewer" role="dialog" aria-label="Enlarged photo">
+  <button type="button" aria-label="Close photo">&times;</button>
+  <img alt="">
+</div>
+
+<script>
+  /* ============================================================
+     YOUR PHOTOS: list the file names here, in the order you want.
+     Put the actual image files in a folder called "images"
+     next to this index.html. Example: images/photo1.jpg
+     ============================================================ */
+  const photos = [
+    "photo1.jpg", "photo2.jpg", "photo3.jpg", "photo4.jpg",
+    "photo5.jpg", "photo6.jpg", "photo7.jpg", "photo8.jpg"
+  ];
+
+  const grid = document.getElementById("work");
+  const viewer = document.getElementById("viewer");
+  const bigImg = viewer.querySelector("img");
+
+  // Build one tile per photo
+  photos.forEach((name, i) => {
+    const tile = document.createElement("button");
+    tile.type = "button";
+    tile.setAttribute("aria-label", "Open photo " + (i + 1));
+
+    const img = document.createElement("img");
+    img.src = "images/" + name;
+    img.alt = "Portfolio photo " + (i + 1);
+    img.loading = "lazy";              // only load photos as you scroll to them
+    img.onerror = () => tile.style.visibility = "hidden"; // hide tiles with no file yet
+
+    tile.appendChild(img);
+    tile.onclick = () => { bigImg.src = img.src; bigImg.alt = img.alt; viewer.classList.add("open"); };
+    grid.appendChild(tile);
+  });
+
+  // Close the enlarged view: click anywhere, or press Escape
+  viewer.onclick = () => viewer.classList.remove("open");
+  document.addEventListener("keydown", e => { if (e.key === "Escape") viewer.classList.remove("open"); });
+</script>
+</body>
+</html>
